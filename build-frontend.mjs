@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 const root = path.dirname(fileURLToPath(import.meta.url));
 const output = path.join(root, 'dist');
 mkdirSync(output, { recursive: true });
-for (const directory of ['assets', 'en', 'es']) {
+for (const directory of ['assets', 'en', 'es', 'de']) {
   cpSync(path.join(root, directory), path.join(output, directory), { recursive: true, force: true });
 }
 for (const file of ['index.html', 'robots.txt', 'sitemap.xml']) {

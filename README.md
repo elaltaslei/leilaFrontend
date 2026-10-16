@@ -1,14 +1,14 @@
 # LEILA Yacht Experience
 
-Buildless bilingual website source. English and Spanish pages are in `en/` and `es/`; optimised photos and shared styles/scripts are in `assets/`.
+Buildless trilingual website source. English, Spanish and German pages are in `en/`, `es/` and `de/`; optimised photos and shared styles/scripts are in `assets/`.
 
 Run `node build-frontend.mjs` from this repository to create `dist/`.
 
 ## Content and photos
 
 - Selected images from the original photo collection are exported as responsive WebP files in `assets/`. Most photos have 480, 960 and 1440 pixel variants. The hero has 768, 1280 and 1920 pixel desktop sizes plus a 720 pixel portrait crop for mobile.
-- Keep the descriptive asset names and update both language pages together when changing photos: `leila-under-sail-*` (hero), `leila-sailing-deck-*` (experience), `leila-at-anchor-*` (yacht), `palma-cathedral-from-sea-*` (destinations), `onboard-table-*` (gastronomy), and the gallery files `leila-sailing-detail-*`, `leila-salon-*`, `leila-cabin-*`, and `bellver-castle-from-sea-*`.
-- Images below the first screen load lazily and include descriptive alt text and dimensions. Preserve those attributes and width variants when updating the markup in `en/index.html` and `es/index.html`.
+- Keep the descriptive asset names and update all three language pages together when changing content. Responsive WebP image sets use `leila-under-sail-*` (hero), `leila-sailing-deck-*` (experience), `leila-at-anchor-*` (yacht), `leila-guests-*` (clients), `palma-cathedral-from-sea-*` (destinations), `onboard-table-*` (gastronomy), and the gallery files `leila-sailing-detail-*`, `leila-salon-*`, `leila-cabin-*`, and `bellver-castle-from-sea-*`.
+- Images below the first screen load lazily and include descriptive alt text and dimensions. Preserve those attributes and width variants when updating the markup in `en/index.html`, `es/index.html` and `de/index.html`.
 - Keep titles, descriptions, canonical URLs, language alternates and sitemap entries aligned between both pages.
 - Confirm the boat's current authorised day and overnight capacities before changing or promoting those figures.
 
