@@ -24,4 +24,4 @@ Before bookings open, provide the legal company name and contact details, privac
 
 ## Publishing
 
-The site is managed through OpenAI Sites. Build this repository to `dist/`, then sync the build output into the Sites project and publish a new version. The current published site is private; request a change to the audience only when the owner is ready to share it publicly. Add the definitive domain and verify its DNS before replacing the canonical URLs and sitemap host. Submit the final sitemap to Search Console after launch.
+The site is managed through OpenAI Sites. Keep `.openai/hosting.json` in this repository and build the frontend to `dist/`, then sync the build output into the Sites project and publish a new version. The current published site is private; request a change to the audience only when the owner is ready to share it publicly. Add the definitive domain and verify its DNS before replacing the canonical URLs and sitemap host. Submit the final sitemap to Search Console after launch.
