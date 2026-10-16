@@ -14,7 +14,7 @@ Run `node build-frontend.mjs` from this repository to create `dist/`.
 
 ## Availability and enquiries
 
-The enquiry form sends JSON to `POST {LEILA_API_BASE}/request-booking`. Local previews use `http://localhost:3001/api`; the published GitHub Pages build stays disabled until a public backend URL is configured in `assets/config.js`. Set it to `https://<backend-host>/api` after deploying the backend. The backend rejects calendar conflicts, emails the captain configured in backend `config/properties.json`, and manages acceptance/rejection and Stripe payment. The website never claims a requested date is available or confirmed before payment.
+The enquiry form sends JSON to `POST {LEILA_API_BASE}/request-booking`. Local previews use `http://localhost:3001/api`; the published GitHub Pages build sends enquiries to `https://leilabackend.onrender.com/api`. The backend rejects calendar conflicts, emails the captain configured in backend `config/properties.json`, and manages acceptance/rejection and Stripe payment. The website never claims a requested date is available or confirmed before payment.
 
 All Calendar API calls happen on the backend. Share the business calendar with the configured service account, use `Europe/Madrid`, and keep credentials in the backend environment file/secret store. Never expose event titles or details to website visitors.
 
