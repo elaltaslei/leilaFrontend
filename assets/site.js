@@ -7,6 +7,33 @@
     de:{months:['Januar','Februar','M\u00e4rz','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'],days:['M','D','M','D','F','S','S'],selected:'Wunschtermin ausgew\u00e4hlt',pending:'Offene Anfrage',loading:'Google-Kalender wird gepr\u00fcft...',calendarError:'Die Verf\u00fcgbarkeit konnte nicht geladen werden. Bitte sp\u00e4ter erneut versuchen.',confirmed:'Buchung best\u00e4tigt',sending:'Anfrage wird gesendet...',sent:'Deine Anfrage wurde an LEILA gesendet. Der Termin ist erst best\u00e4tigt, wenn der Kapit\u00e4n sie annimmt und du die Zahlung abgeschlossen hast.',failed:'Die Anfrage konnte nicht gesendet werden. Bitte pr\u00fcfe deine Verbindung und versuche es erneut.',notConfigured:'Online-Anfragen sind noch nicht verf\u00fcgbar. Bitte schreibe an leilaexperiencereservas@gmail.com.'}
   }[lang]||{months:['January','February','March','April','May','June','July','August','September','October','November','December'],days:['M','T','W','T','F','S','S'],selected:'Preferred date selected',pending:'Pending enquiry',loading:'Checking Google Calendar availability...',calendarError:'Availability could not be loaded. Please try again later.',confirmed:'Confirmed booking',sending:'Sending enquiry...',sent:'Your enquiry has been sent to LEILA. The date is not confirmed until the captain accepts and you complete payment.',failed:'The enquiry could not be sent. Check your connection and try again.',notConfigured:'Online enquiries are not available yet. Please email leilaexperiencereservas@gmail.com.'};
   const dateInput=document.querySelector('#date'),title=document.querySelector('#cal-title'),grid=document.querySelector('#cal-days'),picked=document.querySelector('#picked'),prev=document.querySelector('#prev'),next=document.querySelector('#next');
+  const typeInput=document.querySelector('#type'),priceOutput=document.querySelector('#charter-price');
+  const updateCharterPrice=()=>{
+    if(!typeInput||!priceOutput)return;
+    const type=typeInput.value.toLowerCase(),locale=lang==='es'?'es-ES':lang==='de'?'de-DE':'en-GB';
+    const money=value=>new Intl.NumberFormat(locale,{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(value);
+    let amount=null,description='';
+    if(type.includes('day charter')||type.includes('tagescharter'))amount=1000;
+    else if(type.includes('sunset')||type.includes('puesta')||type.includes('abendt'))amount=800;
+    else if(type.includes('multi-day')||type.includes('varios d')||type.includes('mehrt')){
+      const range=String(dateInput?.value||'').match(/^(\d{4}-\d{2}-\d{2})(?:\s*(?:\/|to|al|–|—)\s*(\d{4}-\d{2}-\d{2}))?$/i);
+      if(range&&range[2]){
+        const days=Math.round((Date.parse(range[2]+'T00:00:00Z')-Date.parse(range[1]+'T00:00:00Z'))/86400000)+1;
+        if(days>0){amount=800*days;description=`800 € × ${days} ${lang==='es'?(days===1?'día':'días'):lang==='de'?(days===1?'Tag':'Tage'):(days===1?'day':'days')} = ${money(amount)}`}
+      }
+      if(amount===null)description=lang==='es'?'800 €/día · total según los días indicados':lang==='de'?'800 €/Tag · Gesamtpreis je nach angegebenen Tagen':'€800/day · total depends on the dates entered';
+    }
+    else if(type.includes('weekly')||type.includes('semanal')||type.includes('wochen'))amount=2000;
+    else if(type.includes('tailored')||type.includes('itinerario')||type.includes('individuell'))amount=500;
+    else if(type.includes('special')||type.includes('celebración')||type.includes('besonder'))amount=500;
+    if(amount!==null&&!description)description=money(amount);
+    priceOutput.hidden=!type;
+    if(type)priceOutput.textContent=(lang==='es'?'Precio temporal: ':lang==='de'?'Temporärer Preis: ':'Temporary price: ')+description;
+  };
+  typeInput?.addEventListener('change',updateCharterPrice);
+  dateInput?.addEventListener('input',updateCharterPrice);
+  dateInput?.addEventListener('change',updateCharterPrice);
+  updateCharterPrice();
   if(grid){
     let cursor=new Date();cursor.setDate(1);
     let chosen=null,availability=null,loading=true,loadVersion=0;
@@ -28,7 +55,7 @@
         button.setAttribute('aria-label',new Date(cursor.getFullYear(),cursor.getMonth(),day).toLocaleDateString(locale,{day:'numeric',month:'long',year:'numeric'})+' \u2014 '+(isConfirmed?labels.confirmed:isPending?labels.pending:lang==='es'?'consulta, no confirmado':lang==='de'?'unverbindliche Anfrage':'request only, not confirmed'));
         if(isConfirmed)button.classList.add('confirmed-date');else if(isPending)button.classList.add('pending-date');
         if(chosen&&chosen.getFullYear()===cursor.getFullYear()&&chosen.getMonth()===cursor.getMonth()&&chosen.getDate()===day)button.classList.add('selected');
-        if(!button.disabled)button.addEventListener('click',()=>{chosen=new Date(cursor.getFullYear(),cursor.getMonth(),day);dateInput.value=dayKey;picked.textContent=labels.selected+': '+chosen.toLocaleDateString(locale,{day:'numeric',month:'long',year:'numeric'});draw()});
+        if(!button.disabled)button.addEventListener('click',()=>{chosen=new Date(cursor.getFullYear(),cursor.getMonth(),day);dateInput.value=dayKey;updateCharterPrice();picked.textContent=labels.selected+': '+chosen.toLocaleDateString(locale,{day:'numeric',month:'long',year:'numeric'});draw()});
         grid.append(button);
       }
     };
