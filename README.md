@@ -1,8 +1,8 @@
 # LEILA Yacht Experience
 
-Buildless trilingual website source. English, Spanish and German pages are in `en/`, `es/` and `de/`; optimised photos and shared styles/scripts are in `assets/`.
+Trilingual static website source. English, Spanish and German pages are in `en/`, `es/` and `de/`; optimised photos and shared styles/scripts are in `assets/`. Build `dist/` before serving or publishing so the API URL is generated for the selected environment.
 
-Run `node build-frontend.mjs` from this repository to create `dist/`.
+Run `node build-frontend.mjs` from this repository to create `dist/`. The build reads the active backend properties profile (`APP_ENV=dev` or `APP_ENV=prod`) and writes its API URL into `dist/assets/config.js`; it defaults to production.
 
 ## Content and photos
 
@@ -14,13 +14,13 @@ Run `node build-frontend.mjs` from this repository to create `dist/`.
 
 ## Availability and enquiries
 
-The enquiry form sends JSON to `POST {LEILA_API_BASE}/request-booking`. Local previews use `http://localhost:3001/api`; the published GitHub Pages build sends enquiries to `https://leilabackend.onrender.com/api`. The backend rejects calendar conflicts, emails the captain configured in backend `config/properties.json`, and manages acceptance/rejection and Stripe payment. The website never claims a requested date is available or confirmed before payment.
+The enquiry form sends JSON to `POST {LEILA_API_BASE}/request-booking`. Run `npm start dev` from the repository root to build and serve the local site at `http://127.0.0.1:8765` and the API at `http://127.0.0.1:3001`. The published site uses the production backend URL; allowed browser origins are selected by `APP_ENV` in backend config. The backend rejects calendar conflicts, emails the captain configured in `backend/config/properties.json`, and manages approval and Stripe payment.
 
 All Calendar API calls happen on the backend. Share the business calendar with the configured service account, use `Europe/Madrid`, and keep credentials in the backend environment file/secret store. Never expose event titles or details to website visitors.
 
 ## Legal and launch details
 
-Before bookings open, provide the legal company name and contact details, privacy notice, cookie configuration, booking/cancellation/refund terms, and any confirmed inclusions or extras. Add the real email, WhatsApp number and social URLs when supplied. No prices, testimonials, route promises or event details are fabricated in this version.
+Booking prices and Half Charter slots are configured in `backend/config/properties.json`. Half Charter is €400 and can be requested for 10:00–14:00 or 16:00–20:00. Before bookings open, provide the legal company name and contact details, privacy notice, cookie configuration, booking/cancellation/refund terms, and any confirmed inclusions or extras. Add the real email, WhatsApp number and social URLs when supplied. No testimonials, route promises or event details are fabricated in this version.
 
 ## Publishing
 
