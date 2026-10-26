@@ -132,4 +132,108 @@
 
 ;(()=>{const lang=document.documentElement.lang,es=lang==='es',de=lang==='de';const words=es?{title:'Enviando tu solicitud',copy:'Estamos preparando el env\u00edo. Enseguida tendr\u00e1s noticias.',done:'Solicitud enviada',processing:'Procesando',thanks:'¡Gracias! Hemos recibido tu consulta.',duplicateTitle:'Consulta ya recibida',duplicate:'Ya tenemos una consulta de este cliente sobre esta fecha. ¿Seguro que quieres enviar una segunda consulta de disponibilidad?',datePrefix:'Fecha: ',cancel:'Volver',continue:'Enviar otra consulta',cancelled:'No se ha enviado una segunda consulta.'}:de?{title:'Anfrage wird gesendet',copy:'Wir bereiten den Versand vor. Gleich erhaeltst du eine Rueckmeldung.',done:'Anfrage gesendet',processing:'Wird verarbeitet',thanks:'Vielen Dank! Wir haben deine Anfrage erhalten.',duplicateTitle:'Anfrage bereits erhalten',duplicate:'F\u00fcr diese E-Mail und dieses Datum liegt bereits eine Anfrage vor. M\u00f6chtest du wirklich eine zweite Verf\u00fcgbarkeitsanfrage senden?',datePrefix:'Datum: ',cancel:'Zur?ck',continue:'Weitere Anfrage senden',cancelled:'Es wurde keine zweite Anfrage gesendet.'}:{title:'Sending your enquiry',copy:'We are preparing your request. We will be with you shortly.',done:'Enquiry sent',processing:'Processing',thanks:'Thank you. We have received your enquiry.',duplicateTitle:'Enquiry already received',duplicate:'We already have an enquiry from this email for this date. Are you sure you want to send a second availability request?',datePrefix:'Date: ',cancel:'Go back',continue:'Send another enquiry',cancelled:'No second enquiry was sent.'};const overlay=document.createElement('div');overlay.className='booking-wait';overlay.hidden=true;overlay.innerHTML='<section class="booking-wait-card" role="dialog" aria-modal="true" aria-labelledby="booking-wait-title" aria-describedby="booking-wait-copy" tabindex="-1"><div class="booking-wait-eyebrow">LEILA &middot; YACHT EXPERIENCE</div><h2 id="booking-wait-title"></h2><p id="booking-wait-copy"></p><div class="booking-race" aria-hidden="true"><span class="booking-goal">&#9873;</span><svg class="booking-boat" viewBox="0 0 64 50"><path d="M31 3v35H8Z" fill="#f7f5f0"/><path d="M35 9v29h21Z" fill="#c6d6d2"/><path d="M5 40c15 5 37 5 54 0l-6 7c-15 4-29 4-43 0Z" fill="#102638"/><path d="M1 49c9-3 17 3 26 0s17-3 26 0 8 2 10 1" fill="none" stroke="#7899a2" stroke-width="2"/></svg><div class="booking-track"><span></span></div></div><div class="booking-progress-row"><span class="booking-progress-label"></span><span class="booking-percent">0%</span></div><div class="booking-progress" role="progressbar" aria-label="Request progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div></section>';document.body.append(overlay);const title=overlay.querySelector('h2'),copy=overlay.querySelector('p'),label=overlay.querySelector('.booking-progress-label'),percent=overlay.querySelector('.booking-percent'),bar=overlay.querySelector('.booking-progress'),barFill=bar.querySelector('span'),boat=overlay.querySelector('.booking-boat');title.textContent=words.title;copy.textContent=words.copy;label.textContent=words.processing;let timer=null,value=0,previousFocus=null;const render=()=>{const v=Math.round(value);percent.textContent=v+'%';bar.setAttribute('aria-valuenow',String(v));barFill.style.width=v+'%';boat.style.left=v+'%'};const keyHandler=e=>{if(e.key==='Escape'||e.key==='Tab')e.preventDefault()};const start=()=>{previousFocus=document.activeElement;overlay.hidden=false;document.body.classList.add('booking-wait-open');document.addEventListener('keydown',keyHandler,true);value=0;render();requestAnimationFrame(()=>overlay.querySelector('.booking-wait-card').focus());timer=setInterval(()=>{value=Math.min(92,value+(value<60?2.7:value<82?1.2:.35));render()},180)};const finish=async success=>{clearInterval(timer);timer=null;if(success){value=100;render();label.textContent=words.done;copy.textContent=words.thanks;await new Promise(resolve=>setTimeout(resolve,900))}else await new Promise(resolve=>setTimeout(resolve,250));overlay.hidden=true;document.body.classList.remove('booking-wait-open');document.removeEventListener('keydown',keyHandler,true);if(previousFocus?.isConnected)previousFocus.focus()};const confirmDuplicate=date=>new Promise(resolve=>{const dialog=document.createElement('div');dialog.className='booking-wait booking-confirm';document.body.classList.add('booking-wait-open');dialog.innerHTML='<section class="booking-wait-card booking-confirm-card" role="dialog" aria-modal="true" aria-labelledby="booking-confirm-title" aria-describedby="booking-confirm-copy"><div class="booking-wait-eyebrow">LEILA ? YACHT EXPERIENCE</div><h2 id="booking-confirm-title"></h2><p id="booking-confirm-copy"></p><div class="booking-confirm-actions"><button class="booking-confirm-cancel" type="button"></button><button class="booking-confirm-continue" type="button"></button></div></section>';const heading=dialog.querySelector('h2'),message=dialog.querySelector('p');heading.textContent=words.duplicateTitle;const formattedDate=date?new Date(date+'T12:00:00').toLocaleDateString(es?'es-ES':de?'de-DE':'en-GB',{day:'numeric',month:'long',year:'numeric'}):'';message.textContent=words.duplicate+(formattedDate?' '+words.datePrefix+formattedDate+'.':'');const cancel=dialog.querySelector('.booking-confirm-cancel'),proceed=dialog.querySelector('.booking-confirm-continue');cancel.textContent=words.cancel;proceed.textContent=words.continue;document.body.append(dialog);const previous=document.activeElement;const close=value=>{dialog.remove();document.body.classList.remove('booking-wait-open');document.removeEventListener('keydown',trap,true);if(previous?.isConnected)previous.focus();resolve(value)};cancel.addEventListener('click',()=>close(false));proceed.addEventListener('click',()=>close(true));const trap=e=>{if(e.key==='Escape'){e.preventDefault();close(false)}else if(e.key==='Tab'){e.preventDefault();(document.activeElement===cancel?proceed:cancel).focus()}};document.addEventListener('keydown',trap,true);cancel.focus()});window.LEILA_WAIT={start,finish,confirmDuplicate}})();
 
-;(()=>{const prefix=document.querySelector('#phone-country-code'),flag=document.querySelector('.phone-flag');if(!prefix||!flag)return;const update=()=>{const country=prefix.selectedOptions[0]?.dataset.country;if(country)flag.src='../assets/flags/'+country+'.svg'};prefix.addEventListener('change',update);update()})();
+;(()=>{
+  const prefix=document.querySelector('#phone-country-code');
+  if(!prefix)return;
+
+  const picker=document.createElement('div');
+  picker.className='phone-country-picker';
+  const trigger=document.createElement('button');
+  trigger.type='button';
+  trigger.className='phone-country-trigger';
+  trigger.setAttribute('role','combobox');
+  trigger.setAttribute('aria-haspopup','listbox');
+  trigger.setAttribute('aria-expanded','false');
+  trigger.id='phone-country-trigger';
+  trigger.setAttribute('aria-controls','phone-country-options');
+  const flag=document.createElement('img');
+  flag.className='phone-flag';
+  flag.alt='';
+  flag.setAttribute('aria-hidden','true');
+  const value=document.createElement('span');
+  value.className='phone-country-value';
+  trigger.append(flag,value);
+
+  const options=document.createElement('div');
+  options.className='phone-country-options';
+  options.id='phone-country-options';
+  options.setAttribute('role','listbox');
+  options.setAttribute('aria-labelledby',trigger.id);
+  options.hidden=true;
+  const optionButtons=[...prefix.options].map(option=>{
+    const button=document.createElement('button');
+    button.type='button';
+    button.className='phone-country-option';
+    button.setAttribute('role','option');
+    button.setAttribute('aria-selected','false');
+    const optionFlag=document.createElement('img');
+    optionFlag.className='phone-flag';
+    optionFlag.alt='';
+    optionFlag.setAttribute('aria-hidden','true');
+    optionFlag.src='../assets/flags/'+option.dataset.country+'.svg';
+    const code=document.createElement('span');
+    code.textContent=option.value;
+    button.append(optionFlag,code);
+    options.append(button);
+    button.addEventListener('click',()=>{
+      prefix.value=option.value;
+      prefix.dispatchEvent(new Event('change',{bubbles:true}));
+      close();
+      trigger.focus();
+    });
+    return button;
+  });
+
+  const render=()=>{
+    const selectedIndex=prefix.selectedIndex;
+    const selected=prefix.options[selectedIndex];
+    if(!selected)return;
+    flag.src='../assets/flags/'+selected.dataset.country+'.svg';
+    value.textContent=selected.value;
+    trigger.setAttribute('aria-label',(prefix.getAttribute('aria-label')||'Country calling code')+' '+selected.value);
+    optionButtons.forEach((button,index)=>button.setAttribute('aria-selected',String(index===selectedIndex)));
+  };
+  const close=()=>{
+    options.hidden=true;
+    trigger.setAttribute('aria-expanded','false');
+  };
+  const open=()=>{
+    options.hidden=false;
+    trigger.setAttribute('aria-expanded','true');
+    optionButtons[prefix.selectedIndex]?.focus();
+  };
+
+  picker.addEventListener('focusout',event=>{if(!picker.contains(event.relatedTarget))close()});
+  trigger.addEventListener('click',()=>options.hidden?open():close());
+  trigger.addEventListener('keydown',event=>{
+    if(event.key==='ArrowDown'||event.key==='ArrowUp'){
+      event.preventDefault();
+      open();
+    }
+  });
+  options.addEventListener('keydown',event=>{
+    const current=optionButtons.indexOf(document.activeElement);
+    if(event.key==='Escape'){
+      event.preventDefault();
+      close();
+      trigger.focus();
+    }else if(event.key==='ArrowDown'||event.key==='ArrowUp'){
+      event.preventDefault();
+      const delta=event.key==='ArrowDown'?1:-1;
+      optionButtons[(current+delta+optionButtons.length)%optionButtons.length]?.focus();
+    }else if(event.key==='Home'||event.key==='End'){
+      event.preventDefault();
+      optionButtons[event.key==='Home'?0:optionButtons.length-1]?.focus();
+    }
+  });
+  document.addEventListener('pointerdown',event=>{
+    if(!picker.contains(event.target))close();
+  });
+  prefix.classList.add('phone-country-native');
+  prefix.tabIndex=-1;
+  prefix.setAttribute('aria-hidden','true');
+  prefix.parentElement.insertBefore(picker,prefix);
+  picker.append(trigger,options);
+  prefix.addEventListener('change',render);
+  render();
+})();
