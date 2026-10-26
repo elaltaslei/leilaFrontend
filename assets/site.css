@@ -31,7 +31,7 @@
 .days button.range-date{background:#d9e0dc;color:var(--navy);cursor:pointer}.days button.range-date:hover{background:#c9d5cf;color:var(--navy)}
 
 .field[hidden]{display:none!important}
-.phone-fields{display:grid;grid-template-columns:28px minmax(132px,165px) minmax(0,1fr);gap:8px;align-items:center}.phone-fields select,.phone-fields input{min-width:0;width:100%}.phone-flag{display:block;width:28px;height:20px;object-fit:cover;border-radius:2px;box-shadow:0 0 0 1px #172b3920}
+.phone-fields{position:relative;display:grid;grid-template-columns:minmax(150px,175px) minmax(0,1fr);gap:8px;align-items:center}.phone-fields select,.phone-fields input{min-width:0;width:100%}.phone-fields select{padding-left:42px}.phone-flag{position:absolute;z-index:1;left:10px;top:50%;transform:translateY(-50%);width:25px;height:17px;object-fit:cover;border-radius:1px;box-shadow:0 0 0 1px #172b3920;pointer-events:none}
 .calendar-legend .half-charter-key{background:#f4d35e}.days button.half-charter-date,.days button.half-charter-date:hover,.days button.half-charter-date.selected{background:#f4d35e;color:#172b39}.days button.half-charter-date{box-shadow:inset 0 -3px #d5aa21}.days button.half-charter-date:disabled{opacity:1}
 
 .days button.partial-date{background:#e5efe9;color:#315f46;box-shadow:inset 0 -3px #6b9878}
